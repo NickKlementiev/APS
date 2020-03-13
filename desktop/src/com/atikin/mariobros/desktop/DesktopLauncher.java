@@ -6,6 +6,7 @@ import com.atikin.mariobros.MarioBros;
 
 public class DesktopLauncher {
 	public static void main (String[] arg) {
+		// Execução básica de jogo
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
 		new LwjglApplication(new MarioBros(), config);
 	}

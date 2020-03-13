@@ -2,7 +2,10 @@ package com.atikin.mariobros.Screens;
 
 import com.atikin.mariobros.MarioBros;
 import com.atikin.mariobros.Scenes.Hud;
+import com.atikin.mariobros.Sprites.Mario;
+import com.atikin.mariobros.Tools.B2WorldCreator;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -19,90 +22,56 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
 public class PlayScreen implements Screen {
-
+    // Referências ao jogo e à tela principal
     private MarioBros game;
 
+    // Variáveis básicas da classe PlayScreen
     private OrthographicCamera gameCam;
     private Viewport gamePort;
     private Hud hud;
 
+    // Variáveis básicas de mapas (vindos de Tiled)
     private TmxMapLoader maploader;
     private TiledMap map;
     private OrthogonalTiledMapRenderer renderer;
 
+    // Variáveis da biblioteca Box2d
     private World world;
     private Box2DDebugRenderer b2dr;
 
+    private Mario player;
+
     public PlayScreen(MarioBros game) {
         this.game = game;
+
+        // Criar câmera que segue o personagem
         gameCam = new OrthographicCamera();
 
-        gamePort = new FitViewport(MarioBros.V_WIDTH, MarioBros.V_HEIGHT, gameCam);
+        // Criar tamanho de tela dinamicamente proporcional ao tamanho da janela
+        gamePort = new FitViewport(MarioBros.V_WIDTH / MarioBros.PPM, MarioBros.V_HEIGHT / MarioBros.PPM, gameCam);
 
+        // Criar instância de Hud (com informações básicas de jogo)
         hud = new Hud(game.batch);
 
+        // Carregar o mapa e configurar o renderizador
         maploader = new TmxMapLoader();
         map = maploader.load("level1.tmx");
-        renderer = new OrthogonalTiledMapRenderer(map);
+        renderer = new OrthogonalTiledMapRenderer(map, 1 / MarioBros.PPM);
 
+        // Centralizar a câmera de jogo ao início
         gameCam.position.set(gamePort.getWorldWidth()/2, gamePort.getWorldHeight()/2, 0);
 
-        world = new World(new Vector2(0, 0), true);
+        // Criar o mundo Box2D, colocando gravidade no eixo vertical e permitindo o repouso dos objetos do tipo corpo
+        world = new World(new Vector2(0, -10), true);
+
+        // Permitir a saída de linhas de debug
         b2dr = new Box2DDebugRenderer();
 
-        BodyDef bdef = new BodyDef();
-        PolygonShape shape = new PolygonShape();
-        FixtureDef fdef = new FixtureDef();
-        Body body;
+        // Separação de código Box2D
+        new B2WorldCreator(world, map);
 
-        for (MapObject object: map.getLayers().get(2).getObjects().getByType(RectangleMapObject.class)) {
-            Rectangle rect = ((RectangleMapObject) object).getRectangle();
-
-            bdef.type = BodyDef.BodyType.StaticBody;
-            bdef.position.set(rect.getX() + rect.getWidth() / 2, rect.getY() + rect.getHeight() / 2);
-
-            body = world.createBody(bdef);
-
-            shape.setAsBox(rect.getWidth() / 2, rect.getHeight() / 2);
-            fdef.shape = shape;
-            body.createFixture(fdef);
-        }
-        for (MapObject object: map.getLayers().get(3).getObjects().getByType(RectangleMapObject.class)) {
-            Rectangle rect = ((RectangleMapObject) object).getRectangle();
-
-            bdef.type = BodyDef.BodyType.StaticBody;
-            bdef.position.set(rect.getX() + rect.getWidth() / 2, rect.getY() + rect.getHeight() / 2);
-
-            body = world.createBody(bdef);
-
-            shape.setAsBox(rect.getWidth() / 2, rect.getHeight() / 2);
-            fdef.shape = shape;
-            body.createFixture(fdef);
-        }
-        for (MapObject object: map.getLayers().get(5).getObjects().getByType(RectangleMapObject.class)) {
-            Rectangle rect = ((RectangleMapObject) object).getRectangle();
-
-            bdef.type = BodyDef.BodyType.StaticBody;
-            bdef.position.set(rect.getX() + rect.getWidth() / 2, rect.getY() + rect.getHeight() / 2);
-
-            body = world.createBody(bdef);
-
-            shape.setAsBox(rect.getWidth() / 2, rect.getHeight() / 2);
-            fdef.shape = shape;
-            body.createFixture(fdef);
-        }
-        for (MapObject object: map.getLayers().get(4).getObjects().getByType(RectangleMapObject.class)) {
-            Rectangle rect = ((RectangleMapObject) object).getRectangle();
-
-            bdef.type = BodyDef.BodyType.StaticBody;
-            bdef.position.set(rect.getX() + rect.getWidth() / 2, rect.getY() + rect.getHeight() / 2);
-
-            body = world.createBody(bdef);
-
-            shape.setAsBox(rect.getWidth() / 2, rect.getHeight() / 2);
-            fdef.shape = shape;
-            body.createFixture(fdef);
-        }
+        // Criar o personagem principal
+        player = new Mario(world);
     }
 
     @Override
@@ -110,37 +79,61 @@ public class PlayScreen implements Screen {
 
     }
 
+    // Configurar controles básicos
     public void handleInput(float dt) {
-        if (Gdx.input.isTouched()) {
-            gameCam.position.x += 100 * dt;
+        if (Gdx.input.isKeyPressed(Input.Keys.LEFT) && player.b2body.getLinearVelocity().x >= -2) {
+            //gameCam.position.x -= 100 * dt / MarioBros.PPM;
+            player.b2body.applyLinearImpulse(new Vector2(-0.1f, 0), player.b2body.getWorldCenter(), true);
+        }
+        else if (Gdx.input.isKeyPressed(Input.Keys.RIGHT) && player.b2body.getLinearVelocity().x <= 2) {
+            //gameCam.position.x += 100 * dt / MarioBros.PPM;
+            player.b2body.applyLinearImpulse(new Vector2(0.1f, 0), player.b2body.getWorldCenter(), true);
+        }
+        if (Gdx.input.isKeyJustPressed(Input.Keys.UP)) {
+            player.b2body.applyLinearImpulse(new Vector2(0, 4f), player.b2body.getWorldCenter(), true);
         }
 
     }
 
     public void update(float dt) {
-       handleInput(dt);
+        // Receber movimentos de antemão
+        handleInput(dt);
 
-       gameCam.update();
-       renderer.setView(gameCam);
+        // Configura 1 passo na simulação física (60 passos por segundo)
+        world.step(1/60f, 6, 2);
+
+        gameCam.position.x = player.b2body.getPosition().x;
+
+        // Atualizar a câmera do jogo com a movimentação do personagem
+        gameCam.update();
+
+        // Renderizar apenas o que é visto pela câmera
+        renderer.setView(gameCam);
     }
 
     @Override
     public void render(float delta) {
+        // Separar a lógica de atualização da lógica de renderização
         update(delta);
 
+        // Limpar a tela de jogo com a cor preta
         Gdx.gl.glClearColor(0, 0, 0 , 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
+        // Renderizar o mapa principal
         renderer.render();
 
+        // Renderizar linhas de debug da biblioteca Box2D
         b2dr.render(world, gameCam.combined);
 
+        // Não renderizar por onde o Hud estaria "passando"
         game.batch.setProjectionMatrix(hud.stage.getCamera().combined);
         hud.stage.draw();
     }
 
     @Override
     public void resize(int width, int height) {
+        // Atualizar o tamanho da tela do jogo em caso de mudanças
         gamePort.update(width, height);
     }
 
@@ -161,6 +154,10 @@ public class PlayScreen implements Screen {
 
     @Override
     public void dispose() {
-
+        map.dispose();
+        renderer.dispose();
+        world.dispose();
+        b2dr.dispose();
+        hud.dispose();
     }
 }
