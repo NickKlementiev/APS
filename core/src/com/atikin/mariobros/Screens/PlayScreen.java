@@ -10,6 +10,7 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.maps.tiled.TiledMap;
@@ -24,6 +25,9 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 public class PlayScreen implements Screen {
     // Referências ao jogo e à tela principal
     private MarioBros game;
+
+    // Instanciando sprites principais
+    private TextureAtlas atlas;
 
     // Variáveis básicas da classe PlayScreen
     private OrthographicCamera gameCam;
@@ -42,6 +46,9 @@ public class PlayScreen implements Screen {
     private Mario player;
 
     public PlayScreen(MarioBros game) {
+        // Alternativa: libGDX assets manager para lidar com gráficos mais elaborados
+        atlas = new TextureAtlas("Mario_and_Enemies.atlas");
+
         this.game = game;
 
         // Criar câmera que segue o personagem
@@ -71,7 +78,11 @@ public class PlayScreen implements Screen {
         new B2WorldCreator(world, map);
 
         // Criar o personagem principal
-        player = new Mario(world);
+        player = new Mario(world, this);
+    }
+
+    public TextureAtlas getAtlas() {
+        return atlas;
     }
 
     @Override
@@ -102,6 +113,9 @@ public class PlayScreen implements Screen {
         // Configura 1 passo na simulação física (60 passos por segundo)
         world.step(1/60f, 6, 2);
 
+        // Atualizar a sprite do jogador
+        player.update(dt);
+
         gameCam.position.x = player.b2body.getPosition().x;
 
         // Atualizar a câmera do jogo com a movimentação do personagem
@@ -125,6 +139,12 @@ public class PlayScreen implements Screen {
 
         // Renderizar linhas de debug da biblioteca Box2D
         b2dr.render(world, gameCam.combined);
+
+        // Renderizar personagem
+        game.batch.setProjectionMatrix(gameCam.combined);
+        game.batch.begin();
+        player.draw(game.batch);
+        game.batch.end();
 
         // Não renderizar por onde o Hud estaria "passando"
         game.batch.setProjectionMatrix(hud.stage.getCamera().combined);
