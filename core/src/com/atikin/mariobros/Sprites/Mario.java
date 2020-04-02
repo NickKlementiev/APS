@@ -5,6 +5,7 @@ import com.atikin.mariobros.Screens.PlayScreen;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.utils.Array;
 
@@ -31,13 +32,17 @@ public class Mario extends Sprite {
         stateTimer = 0;
         runningRight = true;
 
+        // Configuração da animação do personagem
         Array<TextureRegion> frames = new Array<TextureRegion>();
+        // Do arquivo de animação do personagem, usar apenas as quatro primeiras
         for (int i = 1; i < 4; i++) {
             frames.add(new TextureRegion(getTexture(), i * 16, 11, 16, 16));
         }
         marioRun = new Animation<TextureRegion>(0.1f, frames);
+        // Limpar o array para usá-lo com outras figuras
         frames.clear();
 
+        // Do arquivo de animação do personagem, usar apenas a quarta e a quinta imagem
         for (int i = 4; i < 6; i++) {
             frames.add(new TextureRegion(getTexture(), i * 16, 11, 16, 16));
         }
@@ -56,6 +61,7 @@ public class Mario extends Sprite {
         setRegion(getFrame(dt));
     }
 
+    // Configuração dos frames e das animações do personagem
     public TextureRegion getFrame(float dt) {
         currentState = getState();
         TextureRegion region;
@@ -72,7 +78,7 @@ public class Mario extends Sprite {
                 region = marioStand;
                 break;
         }
-
+        // Orientação do personagem (olhando para a esquerda ou para a direita)
         if ((b2body.getLinearVelocity().x < 0 || !runningRight) && !region.isFlipX()) {
             region.flip(true, false);
             runningRight = false;
@@ -87,6 +93,7 @@ public class Mario extends Sprite {
         return region;
     }
 
+    // Descobrir o estado atual do personagem
     public State getState() {
         if (b2body.getLinearVelocity().y > 0 || (b2body.getLinearVelocity().y < 0 && previousState == State.JUMPING)) {
             return State.JUMPING;
@@ -112,8 +119,17 @@ public class Mario extends Sprite {
         FixtureDef fdef = new FixtureDef();
         CircleShape shape = new CircleShape();
         shape.setRadius(6 / MarioBros.PPM);
+        fdef.filter.categoryBits = MarioBros.MARIO_BIT;
+        fdef.filter.maskBits = MarioBros.DEFAULT_BIT | MarioBros.COIN_BIT | MarioBros.BRICK_BIT;
 
         fdef.shape = shape;
         b2body.createFixture(fdef);
+
+        EdgeShape head = new EdgeShape();
+        head.set(new Vector2(-2 / MarioBros.PPM, 6 / MarioBros.PPM), new Vector2(2 / MarioBros.PPM, 6 / MarioBros.PPM));
+        fdef.shape = head;
+        fdef.isSensor = true;
+
+        b2body.createFixture(fdef).setUserData("head");
     }
 }

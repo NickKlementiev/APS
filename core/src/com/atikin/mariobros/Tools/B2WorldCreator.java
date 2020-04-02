@@ -1,6 +1,7 @@
 package com.atikin.mariobros.Tools;
 
 import com.atikin.mariobros.MarioBros;
+import com.atikin.mariobros.Sprites.Brick;
 import com.atikin.mariobros.Sprites.Coin;
 import com.atikin.mariobros.Sprites.Mario;
 import com.badlogic.gdx.maps.MapObject;
@@ -43,20 +44,14 @@ public class B2WorldCreator {
             shape.setAsBox(rect.getWidth() / 2 / MarioBros.PPM, rect.getHeight() / 2 / MarioBros.PPM);
             fdef.shape = shape;
             body.createFixture(fdef);
+
         }
 
-        // Configurar objetos do tipo Bricks (blocos)
+        // Configurar objetos do tipo Bricks (tijolos)
         for (MapObject object: map.getLayers().get(5).getObjects().getByType(RectangleMapObject.class)) {
             Rectangle rect = ((RectangleMapObject) object).getRectangle();
 
-            bdef.type = BodyDef.BodyType.StaticBody;
-            bdef.position.set((rect.getX() + rect.getWidth() / 2) / MarioBros.PPM, (rect.getY() + rect.getHeight() / 2) / MarioBros.PPM);
-
-            body = world.createBody(bdef);
-
-            shape.setAsBox(rect.getWidth() / 2 / MarioBros.PPM, rect.getHeight() / 2 / MarioBros.PPM);
-            fdef.shape = shape;
-            body.createFixture(fdef);
+            new Brick(world, map, rect);
         }
 
         // Configurar objetos do tipo Coins (moedas)
@@ -66,5 +61,7 @@ public class B2WorldCreator {
             new Coin(world, map, rect);
 
         }
+
+
     }
 }

@@ -4,6 +4,7 @@ import com.atikin.mariobros.MarioBros;
 import com.atikin.mariobros.Scenes.Hud;
 import com.atikin.mariobros.Sprites.Mario;
 import com.atikin.mariobros.Tools.B2WorldCreator;
+import com.atikin.mariobros.Tools.WorldContactListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
@@ -79,6 +80,9 @@ public class PlayScreen implements Screen {
 
         // Criar o personagem principal
         player = new Mario(world, this);
+
+        // Instanciar o listener de ações
+        world.setContactListener(new WorldContactListener());
     }
 
     public TextureAtlas getAtlas() {
@@ -172,7 +176,9 @@ public class PlayScreen implements Screen {
 
     }
 
+
     @Override
+    // Limpar objetos instanciados na memória
     public void dispose() {
         map.dispose();
         renderer.dispose();
