@@ -8,6 +8,7 @@ import com.atikin.mariobros.Tools.WorldContactListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
@@ -46,6 +47,8 @@ public class PlayScreen implements Screen {
 
     private Mario player;
 
+    private Music music;
+
     public PlayScreen(MarioBros game) {
         // Alternativa: libGDX assets manager para lidar com gráficos mais elaborados
         atlas = new TextureAtlas("Mario_and_Enemies.atlas");
@@ -83,6 +86,11 @@ public class PlayScreen implements Screen {
 
         // Instanciar o listener de ações
         world.setContactListener(new WorldContactListener());
+
+        // Configuração da música principal
+        music = MarioBros.manager.get("audio/music/mario_music.ogg", Music.class);
+        music.setLooping(true);
+        music.play();
     }
 
     public TextureAtlas getAtlas() {
@@ -120,6 +128,10 @@ public class PlayScreen implements Screen {
         // Atualizar a sprite do jogador
         player.update(dt);
 
+        // Atualizar o HUD
+        hud.update(dt);
+
+        // Grudar a câmera com as abscissas do personagem
         gameCam.position.x = player.b2body.getPosition().x;
 
         // Atualizar a câmera do jogo com a movimentação do personagem

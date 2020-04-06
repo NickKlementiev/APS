@@ -16,6 +16,22 @@ public class Hud implements Disposable {
     public Stage stage;
     private Viewport viewport;
 
+    // Função de atualização de tempo
+    public void update(float dt) {
+        timeCount += dt;
+        if (timeCount >= 1) {
+            worldTimer--;
+            countdownLabel.setText(String.format("%03d", worldTimer));
+            timeCount = 0;
+        }
+    }
+
+    // Função de adicionar pontos
+    public static void addScore(int value) {
+        score += value;
+        scoreLabel.setText(String.format("%06d", score));
+    }
+
     @Override
     public void dispose() {
         stage.dispose();
@@ -23,27 +39,32 @@ public class Hud implements Disposable {
 
     private Integer worldTimer;
     private float timeCount;
-    private Integer score;
+    private static Integer score;
 
-    Label countdownLabel;
-    Label scoreLabel;
-    Label timeLabel;
-    Label levelLabel;
-    Label worldLabel;
-    Label marioLabel;
+    private Label countdownLabel;
+    private static Label scoreLabel;
+    private Label timeLabel;
+    private Label levelLabel;
+    private Label worldLabel;
+    private Label marioLabel;
 
+    // Função construtora do texto que aparece em branco no topo da tela
     public Hud(SpriteBatch sb) {
+        // Valores iniciais padrão
         worldTimer = 300;
         timeCount = 0;
         score = 0;
 
+        // Configuração da resolução
         viewport = new FitViewport(MarioBros.V_WIDTH, MarioBros.V_HEIGHT, new OrthographicCamera());
         stage = new Stage(viewport, sb);
 
+        // Função de criar tabelas
         Table table = new Table();
         table.top();
         table.setFillParent(true);
 
+        // Preencher as tabelas
         countdownLabel = new Label(String.format("%03d", worldTimer), new Label.LabelStyle(new BitmapFont(), Color.WHITE));
         scoreLabel = new Label(String.format("%06d", score), new Label.LabelStyle(new BitmapFont(), Color.WHITE));
         timeLabel = new Label("TIME", new Label.LabelStyle(new BitmapFont(), Color.WHITE));
@@ -51,6 +72,7 @@ public class Hud implements Disposable {
         worldLabel = new Label("WORLD", new Label.LabelStyle(new BitmapFont(), Color.WHITE));
         marioLabel = new Label("MARIO", new Label.LabelStyle(new BitmapFont(), Color.WHITE));
 
+        // Adicinar as células da tabela com distância do topo (padTop)
         table.add(marioLabel).expandX().padTop(10);
         table.add(worldLabel).expandX().padTop(10);
         table.add(timeLabel).expandX().padTop(10);
@@ -59,6 +81,7 @@ public class Hud implements Disposable {
         table.add(levelLabel).expandX();
         table.add(countdownLabel).expandX();
 
+        // Adicionar tabela ao nível
         stage.addActor(table);
     }
 }
