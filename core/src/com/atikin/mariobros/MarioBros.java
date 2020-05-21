@@ -1,5 +1,6 @@
 package com.atikin.mariobros;
 
+import com.atikin.mariobros.Screens.MainMenu;
 import com.atikin.mariobros.Screens.PlayScreen;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Game;
@@ -18,11 +19,17 @@ public class MarioBros extends Game {
 	public static final float PPM = 100;
 
 	// Bits padrões (utilizam-se bits para usar uma funcionalidade chamada bitwise operation)
-	public static final short DEFAULT_BIT = 1;
+	public static final short NOTHING_BIT = 0;
+	public static final short GROUND_BIT = 1;
 	public static final short MARIO_BIT = 2;
 	public static final short BRICK_BIT = 4;
 	public static final short COIN_BIT = 8;
 	public static final short DESTROYED_BIT = 16;
+	public static final short OBJECT_BIT = 32;
+	public static final short ENEMY_BIT = 64;
+	public static final short ENEMY_HEAD_BIT = 128;
+	public static final short ITEM_BIT = 256;
+	public static final short MARIO_HEAD_BIT = 512;
 
 	public SpriteBatch batch;
 
@@ -37,8 +44,14 @@ public class MarioBros extends Game {
 		manager.load("audio/sounds/coin.wav", Sound.class);
 		manager.load("audio/sounds/bump.wav", Sound.class);
 		manager.load("audio/sounds/breakblock.wav", Sound.class);
+		manager.load("audio/sounds/powerup_spawn.wav", Sound.class);
+		manager.load("audio/sounds/powerup.wav", Sound.class);
+		manager.load("audio/sounds/powerdown.wav", Sound.class);
+		manager.load("audio/sounds/stomp.wav", Sound.class);
+		manager.load("audio/sounds/mariodie.wav", Sound.class);
 		manager.finishLoading();
-		setScreen(new PlayScreen( this));
+		//setScreen(new PlayScreen(this));
+		setScreen(new MainMenu(this));
 	}
 
 	@Override

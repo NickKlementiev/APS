@@ -1,8 +1,14 @@
 package com.atikin.mariobros.Screens;
 
+import com.atikin.mariobros.Items.Item;
+import com.atikin.mariobros.Items.ItemDef;
+import com.atikin.mariobros.Items.Mushroom;
 import com.atikin.mariobros.MarioBros;
 import com.atikin.mariobros.Scenes.Hud;
+import com.atikin.mariobros.Sprites.Enemy;
+import com.atikin.mariobros.Sprites.Goomba;
 import com.atikin.mariobros.Sprites.Mario;
+import com.atikin.mariobros.Sprites.Turtle;
 import com.atikin.mariobros.Tools.B2WorldCreator;
 import com.atikin.mariobros.Tools.WorldContactListener;
 import com.badlogic.gdx.Gdx;
@@ -21,8 +27,12 @@ import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
+
+import java.util.PriorityQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 
 public class PlayScreen implements Screen {
     // Referências ao jogo e à tela principal
@@ -44,14 +54,19 @@ public class PlayScreen implements Screen {
     // Variáveis da biblioteca Box2d
     private World world;
     private Box2DDebugRenderer b2dr;
+    private B2WorldCreator creator;
 
+    // Carregamento das sprites
     private Mario player;
 
     private Music music;
 
+    private Array<Item> items;
+    private LinkedBlockingQueue<ItemDef> itemsToSpawn;
+
     public PlayScreen(MarioBros game) {
         // Alternativa: libGDX assets manager para lidar com gráficos mais elaborados
-        atlas = new TextureAtlas("Mario_and_Enemies.atlas");
+        atlas = new TextureAtlas("Mario_and_Enemies.pack");
 
         this.game = game;
 
@@ -79,10 +94,10 @@ public class PlayScreen implements Screen {
         b2dr = new Box2DDebugRenderer();
 
         // Separação de código Box2D
-        new B2WorldCreator(world, map);
+        creator = new B2WorldCreator(this);
 
         // Criar o personagem principal
-        player = new Mario(world, this);
+        player = new Mario(this);
 
         // Instanciar o listener de ações
         world.setContactListener(new WorldContactListener());
@@ -90,7 +105,25 @@ public class PlayScreen implements Screen {
         // Configuração da música principal
         music = MarioBros.manager.get("audio/music/mario_music.ogg", Music.class);
         music.setLooping(true);
+        music.setVolume(0.5f);
         music.play();
+
+        // Definição dos itens do jogo
+        items = new Array<Item>();
+        itemsToSpawn = new LinkedBlockingQueue<ItemDef>();
+    }
+
+    public void spawnItem(ItemDef idef) {
+        itemsToSpawn.add(idef);
+    }
+
+    public void handleSpawningItems() {
+        if (!itemsToSpawn.isEmpty()) {
+            ItemDef idef = itemsToSpawn.poll();
+            if (idef.type == Mushroom.class) {
+                items.add(new Mushroom(this, idef.position.x, idef.position.y));
+            }
+        }
     }
 
     public TextureAtlas getAtlas() {
@@ -104,35 +137,47 @@ public class PlayScreen implements Screen {
 
     // Configurar controles básicos
     public void handleInput(float dt) {
-        if (Gdx.input.isKeyPressed(Input.Keys.LEFT) && player.b2body.getLinearVelocity().x >= -2) {
-            //gameCam.position.x -= 100 * dt / MarioBros.PPM;
-            player.b2body.applyLinearImpulse(new Vector2(-0.1f, 0), player.b2body.getWorldCenter(), true);
+        if (player.currentState != Mario.State.DEAD) {
+            if (Gdx.input.isKeyPressed(Input.Keys.LEFT) && player.b2body.getLinearVelocity().x >= -2) {
+                player.b2body.applyLinearImpulse(new Vector2(-0.1f, 0), player.b2body.getWorldCenter(), true);
+            } else if (Gdx.input.isKeyPressed(Input.Keys.RIGHT) && player.b2body.getLinearVelocity().x <= 2) {
+                player.b2body.applyLinearImpulse(new Vector2(0.1f, 0), player.b2body.getWorldCenter(), true);
+            }
+            if (Gdx.input.isKeyJustPressed(Input.Keys.UP)) {
+                if (player.getState() != Mario.State.JUMPING)
+                    player.b2body.applyLinearImpulse(new Vector2(0, 4f), player.b2body.getWorldCenter(), true);
+            }
         }
-        else if (Gdx.input.isKeyPressed(Input.Keys.RIGHT) && player.b2body.getLinearVelocity().x <= 2) {
-            //gameCam.position.x += 100 * dt / MarioBros.PPM;
-            player.b2body.applyLinearImpulse(new Vector2(0.1f, 0), player.b2body.getWorldCenter(), true);
-        }
-        if (Gdx.input.isKeyJustPressed(Input.Keys.UP)) {
-            player.b2body.applyLinearImpulse(new Vector2(0, 4f), player.b2body.getWorldCenter(), true);
-        }
-
     }
 
     public void update(float dt) {
         // Receber movimentos de antemão
         handleInput(dt);
 
-        // Configura 1 passo na simulação física (60 passos por segundo)
+        // Configurar itens
+        handleSpawningItems();
+
+        // Configura 1 passo na simulação física (60 vezes por segundo)
         world.step(1/60f, 6, 2);
 
         // Atualizar a sprite do jogador
         player.update(dt);
 
+        for (Enemy enemy: creator.getEnemies()) {
+            enemy.update(dt);
+            if (enemy.getX() < player.getX() + 224 / MarioBros.PPM)
+                enemy.b2body.setActive(true);
+        }
+
+        for (Item item : items)
+            item.update(dt);
+
         // Atualizar o HUD
         hud.update(dt);
 
         // Grudar a câmera com as abscissas do personagem
-        gameCam.position.x = player.b2body.getPosition().x;
+        if (player.currentState != Mario.State.DEAD)
+            gameCam.position.x = player.b2body.getPosition().x;
 
         // Atualizar a câmera do jogo com a movimentação do personagem
         gameCam.update();
@@ -153,24 +198,48 @@ public class PlayScreen implements Screen {
         // Renderizar o mapa principal
         renderer.render();
 
-        // Renderizar linhas de debug da biblioteca Box2D
-        b2dr.render(world, gameCam.combined);
+        // Renderizar linhas de debug da biblioteca Box2D (para observar shapes de CircleShape e PolygonShape)
+        //b2dr.render(world, gameCam.combined);
 
-        // Renderizar personagem
+        // Renderizar personagens (principal + inimigos)
         game.batch.setProjectionMatrix(gameCam.combined);
         game.batch.begin();
         player.draw(game.batch);
+        for (Enemy enemy: creator.getEnemies())
+            enemy.draw(game.batch);
+        for (Item item: items)
+            item.draw(game.batch);
         game.batch.end();
 
         // Não renderizar por onde o Hud estaria "passando"
         game.batch.setProjectionMatrix(hud.stage.getCamera().combined);
         hud.stage.draw();
+
+        if (gameOver()) {
+            game.setScreen(new GameOverScreen(game));
+            dispose();
+        }
+    }
+
+    public boolean gameOver() {
+        if(player.currentState == Mario.State.DEAD && player.getStateTimer() > 3) {
+            return true;
+        }
+        return false;
     }
 
     @Override
     public void resize(int width, int height) {
         // Atualizar o tamanho da tela do jogo em caso de mudanças
         gamePort.update(width, height);
+    }
+
+    public TiledMap getMap() {
+        return map;
+    }
+
+    public World getWorld() {
+        return world;
     }
 
     @Override

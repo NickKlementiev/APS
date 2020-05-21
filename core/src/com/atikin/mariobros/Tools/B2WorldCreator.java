@@ -1,17 +1,36 @@
 package com.atikin.mariobros.Tools;
 
 import com.atikin.mariobros.MarioBros;
-import com.atikin.mariobros.Sprites.Brick;
-import com.atikin.mariobros.Sprites.Coin;
-import com.atikin.mariobros.Sprites.Mario;
+import com.atikin.mariobros.Screens.PlayScreen;
+import com.atikin.mariobros.Sprites.*;
 import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.physics.box2d.*;
+import com.badlogic.gdx.utils.Array;
 
 public class B2WorldCreator {
-    public B2WorldCreator(World world, TiledMap map) {
+    private Array<Goomba> goombas;
+    private Array<Turtle> turtles;
+
+    public Array<Goomba> getGoombas() {
+        return goombas;
+    }
+
+    public Array<Enemy> getEnemies() {
+        Array<Enemy> enemies = new Array<Enemy>();
+        enemies.addAll(goombas);
+        enemies.addAll(turtles);
+        return enemies;
+
+    }
+
+    public B2WorldCreator(PlayScreen screen) {
+        World world = screen.getWorld();
+        TiledMap map = screen.getMap();
+
+        // Criar corpo e variáveis de "fixture"
         BodyDef bdef = new BodyDef();
         PolygonShape shape = new PolygonShape();
         FixtureDef fdef = new FixtureDef();
@@ -43,6 +62,8 @@ public class B2WorldCreator {
 
             shape.setAsBox(rect.getWidth() / 2 / MarioBros.PPM, rect.getHeight() / 2 / MarioBros.PPM);
             fdef.shape = shape;
+            fdef.filter.categoryBits = MarioBros.OBJECT_BIT;
+            fdef.filter.maskBits = MarioBros.OBJECT_BIT | MarioBros.ENEMY_BIT | MarioBros.MARIO_BIT | MarioBros.ITEM_BIT;
             body.createFixture(fdef);
 
         }
@@ -51,15 +72,29 @@ public class B2WorldCreator {
         for (MapObject object: map.getLayers().get(5).getObjects().getByType(RectangleMapObject.class)) {
             Rectangle rect = ((RectangleMapObject) object).getRectangle();
 
-            new Brick(world, map, rect);
+            new Brick(screen, object);
         }
 
         // Configurar objetos do tipo Coins (moedas)
         for (MapObject object: map.getLayers().get(4).getObjects().getByType(RectangleMapObject.class)) {
             Rectangle rect = ((RectangleMapObject) object).getRectangle();
 
-            new Coin(world, map, rect);
+            new Coin(screen, object);
 
+        }
+
+        // Configurar objetos do tipo Goomba (inimigos)
+        goombas = new Array<Goomba>();
+        for (MapObject object: map.getLayers().get(6).getObjects().getByType(RectangleMapObject.class)) {
+            Rectangle rect = ((RectangleMapObject) object).getRectangle();
+            goombas.add(new Goomba(screen, rect.getX() / MarioBros.PPM, rect.getY() / MarioBros.PPM));
+        }
+
+        // Configurar objetos do tipo Turtle (inimigos)
+        turtles = new Array<Turtle>();
+        for (MapObject object: map.getLayers().get(7).getObjects().getByType(RectangleMapObject.class)) {
+            Rectangle rect = ((RectangleMapObject) object).getRectangle();
+            turtles.add(new Turtle(screen, rect.getX() / MarioBros.PPM, rect.getY() / MarioBros.PPM));
         }
 
 
