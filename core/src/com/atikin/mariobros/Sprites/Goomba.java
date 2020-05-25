@@ -8,10 +8,7 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.PolygonBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.physics.box2d.BodyDef;
-import com.badlogic.gdx.physics.box2d.CircleShape;
-import com.badlogic.gdx.physics.box2d.FixtureDef;
-import com.badlogic.gdx.physics.box2d.PolygonShape;
+import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.utils.Array;
 
 
@@ -25,12 +22,12 @@ public class Goomba extends Enemy {
     public Goomba(PlayScreen screen, float x, float y) {
         super(screen, x, y);
         frames = new Array<TextureRegion>();
-        for (int i = 0; i < 2; i++) {
-            frames.add(new TextureRegion(screen.getAtlas().findRegion("goomba"), i * 16, 0, 16, 18));
-        }
-        walkAnimation = new Animation<TextureRegion>(0.4f, frames);
+        frames.add(new TextureRegion(screen.getAtlas().findRegion("goomba"), 0, 0, 24, 27));
+        frames.add(new TextureRegion(screen.getAtlas().findRegion("goomba"), 25, 0, 24, 27));
+        frames.add(new TextureRegion(screen.getAtlas().findRegion("goomba"), 51, 0, 24, 27));
+        walkAnimation = new Animation<TextureRegion>(0.3f, frames);
         stateTime = 0;
-        setBounds(getX(), getY(), 16 / MarioBros.PPM, 16 / MarioBros.PPM);
+        setBounds(getX(), getY(), 27 / MarioBros.PPM, 30 / MarioBros.PPM);
         setToDestroy = false;
         destroyed = false;
     }
@@ -40,11 +37,11 @@ public class Goomba extends Enemy {
         if (setToDestroy && !destroyed) {
             world.destroyBody(b2body);
             destroyed = true;
-            setRegion(new TextureRegion(screen.getAtlas().findRegion("goomba"), 32, 0, 16, 16));
+            setRegion(new TextureRegion(screen.getAtlas().findRegion("goomba"), 75, 0, 24, 27));
             stateTime = 0;
         } else if (!destroyed) {
             b2body.setLinearVelocity(velocity);
-            setPosition(b2body.getPosition().x - getWidth() / 2, b2body.getPosition().y - getHeight() / 2);
+            setPosition(b2body.getPosition().x - getWidth() / 2, b2body.getPosition().y - getHeight() / 2 + .05f);
             setRegion(walkAnimation.getKeyFrame(stateTime, true));
         }
     }
@@ -73,7 +70,7 @@ public class Goomba extends Enemy {
 
         FixtureDef fdef = new FixtureDef();
         CircleShape shape = new CircleShape();
-        shape.setRadius(6 / MarioBros.PPM);
+        shape.setRadius(8 / MarioBros.PPM);
         fdef.filter.categoryBits = MarioBros.ENEMY_BIT;
         fdef.filter.maskBits = MarioBros.GROUND_BIT |
                 MarioBros.COIN_BIT |
@@ -88,10 +85,10 @@ public class Goomba extends Enemy {
         // Objeto cabeça
         PolygonShape head = new PolygonShape();
         Vector2[] vertice = new Vector2[4];
-        vertice[0] = new Vector2(-5, 8).scl(1 / MarioBros.PPM);
-        vertice[1] = new Vector2(5, 8).scl(1 / MarioBros.PPM);
-        vertice[2] = new Vector2(-3, 3).scl(1 / MarioBros.PPM);
-        vertice[3] = new Vector2(3, 3).scl(1 / MarioBros.PPM);
+        vertice[0] = new Vector2(-7, 16).scl(1 / MarioBros.PPM);
+        vertice[1] = new Vector2(7, 16).scl(1 / MarioBros.PPM);
+        vertice[2] = new Vector2(-7, 9).scl(1 / MarioBros.PPM);
+        vertice[3] = new Vector2(7, 9).scl(1 / MarioBros.PPM);
         head.set(vertice);
 
         fdef.shape = head;

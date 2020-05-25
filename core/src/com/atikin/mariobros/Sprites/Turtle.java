@@ -63,8 +63,8 @@ public class Turtle extends Enemy {
         Vector2[] vertice = new Vector2[4];
         vertice[0] = new Vector2(-5, 8).scl(1 / MarioBros.PPM);
         vertice[1] = new Vector2(5, 8).scl(1 / MarioBros.PPM);
-        vertice[2] = new Vector2(-3, 3).scl(1 / MarioBros.PPM);
-        vertice[3] = new Vector2(3, 3).scl(1 / MarioBros.PPM);
+        vertice[2] = new Vector2(-5, 3).scl(1 / MarioBros.PPM);
+        vertice[3] = new Vector2(5, 3).scl(1 / MarioBros.PPM);
         head.set(vertice);
 
         fdef.shape = head;

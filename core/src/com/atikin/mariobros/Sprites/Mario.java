@@ -50,43 +50,38 @@ public class Mario extends Sprite {
         // Configuração da animação do personagem
         Array<TextureRegion> frames = new Array<TextureRegion>();
         // Do arquivo de animação do personagem, usar apenas as quatro primeiras
-        for (int i = 1; i < 4; i++) {
-            frames.add(new TextureRegion(screen.getAtlas().findRegion("little_mario"), i * 16, 0, 16, 16));
-        }
-        marioRun = new Animation<TextureRegion>(0.1f, frames);
+        frames.add(new TextureRegion(screen.getAtlas().findRegion("little_mario"), 0, 0, 17, 21));
+        frames.add(new TextureRegion(screen.getAtlas().findRegion("little_mario"), 18, 0, 17, 22));
+        marioRun = new Animation<TextureRegion>(0.3f, frames);
         // Limpar o array para usá-lo com outras figuras
         frames.clear();
 
-        for (int i = 1; i < 4; i++) {
-            frames.add(new TextureRegion(screen.getAtlas().findRegion("big_mario"), i * 16, 0, 16, 32));
-        }
-        bigMarioRun = new Animation<TextureRegion>(0.1f, frames);
+        frames.add(new TextureRegion(screen.getAtlas().findRegion("big_mario"), 0, 0, 28, 34));
+        frames.add(new TextureRegion(screen.getAtlas().findRegion("big_mario"), 29, 0, 28, 34));
+        bigMarioRun = new Animation<TextureRegion>(0.3f, frames);
         frames.clear();
 
         // Aquisição dos frames de animação do crescimento do personagem
-        frames.add(new TextureRegion(screen.getAtlas().findRegion("big_mario"), 240, 0, 16, 32));
-        frames.add(new TextureRegion(screen.getAtlas().findRegion("big_mario"), 0, 0, 16, 32));
-        frames.add(new TextureRegion(screen.getAtlas().findRegion("big_mario"), 240, 0, 16, 32));
-        frames.add(new TextureRegion(screen.getAtlas().findRegion("big_mario"), 0, 0, 16, 32));
+        frames.add(new TextureRegion(screen.getAtlas().findRegion("little_mario"), 0, 0, 19, 23));
         growMario = new Animation<TextureRegion>(0.2f, frames);
         frames.clear();
 
         // "Animação" do pulo do personagem
-        marioJump = new TextureRegion(screen.getAtlas().findRegion("little_mario"), 80, 0, 16, 16);
-        bigMarioJump = new TextureRegion(screen.getAtlas().findRegion("big_mario"), 80, 0, 16, 32);
+        marioJump = new TextureRegion(screen.getAtlas().findRegion("little_mario"), 18, 0, 17, 21);
+        bigMarioJump = new TextureRegion(screen.getAtlas().findRegion("big_mario"), 29, 0, 28, 34);
 
         // Especificar e associar resolução de sprite padrão
-        marioStand = new TextureRegion(screen.getAtlas().findRegion("little_mario"), 0, 0, 16, 16);
-        bigMarioStand = new TextureRegion(screen.getAtlas().findRegion("big_mario"), 0, 0, 16, 32);
+        marioStand = new TextureRegion(screen.getAtlas().findRegion("little_mario"), 0, 0, 17, 21);
+        bigMarioStand = new TextureRegion(screen.getAtlas().findRegion("big_mario"), 0, 0, 28, 34);
 
         // "Animação" da morte do personagem
-        marioDead = new TextureRegion(screen.getAtlas().findRegion("little_mario"), 96, 0, 16, 16);
+        marioDead = new TextureRegion(screen.getAtlas().findRegion("little_mario"), 37, 0, 17, 21);
 
         // Definição do personagem
         defineMario();
 
         // Local e configurações iniciais do personagem
-        setBounds(0, 0, 16 / MarioBros.PPM, 16 / MarioBros.PPM);
+        setBounds(0, 0, 17 / MarioBros.PPM, 20 / MarioBros.PPM);
         setRegion(marioStand);
     }
 
@@ -94,7 +89,7 @@ public class Mario extends Sprite {
         if (marioIsBig)
             setPosition(b2body.getPosition().x - getWidth() / 2, b2body.getPosition().y - getHeight() / 2 - 6 / MarioBros.PPM);
         else
-            setPosition(b2body.getPosition().x - getWidth() / 2, b2body.getPosition().y - getHeight() / 2);
+            setPosition(b2body.getPosition().x - getWidth() / 2, b2body.getPosition().y - getHeight() / 2 + 0.025f);
         setRegion(getFrame(dt));
         if (timeToDefineBigMario)
             defineBigMario();
@@ -113,7 +108,7 @@ public class Mario extends Sprite {
             if (marioIsBig) {
                 marioIsBig = false;
                 timeToRedefineMario = true;
-                setBounds(getX(), getY(), getWidth(), getHeight() / 2);
+                setBounds(getX(), getY(), getWidth() / 1.5f, getHeight() / 1.5f);
                 MarioBros.manager.get("audio/sounds/powerdown.wav", Sound.class).play();
             } else {
                 MarioBros.manager.get("audio/music/mario_music.ogg", Music.class).stop();
@@ -193,7 +188,7 @@ public class Mario extends Sprite {
         runGrowAnimation = true;
         marioIsBig = true;
         timeToDefineBigMario = true;
-        setBounds(getX(), getY(), getWidth(), getHeight() * 2);
+        setBounds(getX(), getY(), getWidth() * 1.5f, getHeight() * 1.5f);
         MarioBros.manager.get("audio/sounds/powerup.wav", Sound.class).play();
     }
 
@@ -230,7 +225,7 @@ public class Mario extends Sprite {
         b2body.createFixture(fdef).setUserData(this);
 
         EdgeShape head = new EdgeShape();
-        head.set(new Vector2(-2 / MarioBros.PPM, 6 / MarioBros.PPM), new Vector2(2 / MarioBros.PPM, 6 / MarioBros.PPM));
+        head.set(new Vector2(-2 / MarioBros.PPM, 10 / MarioBros.PPM), new Vector2(2 / MarioBros.PPM, 10 / MarioBros.PPM));
         fdef.filter.categoryBits = MarioBros.MARIO_HEAD_BIT;
         fdef.shape = head;
         fdef.isSensor = true;
@@ -297,7 +292,7 @@ public class Mario extends Sprite {
         b2body.createFixture(fdef).setUserData(this);
 
         EdgeShape head = new EdgeShape();
-        head.set(new Vector2(-2 / MarioBros.PPM, 6 / MarioBros.PPM), new Vector2(2 / MarioBros.PPM, 6 / MarioBros.PPM));
+        head.set(new Vector2(-2 / MarioBros.PPM, 8 / MarioBros.PPM), new Vector2(2 / MarioBros.PPM, 8 / MarioBros.PPM));
         fdef.filter.categoryBits = MarioBros.MARIO_HEAD_BIT;
         fdef.shape = head;
         fdef.isSensor = true;

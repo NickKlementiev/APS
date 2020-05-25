@@ -3,6 +3,7 @@ package com.atikin.mariobros.Screens;
 import com.atikin.mariobros.MarioBros;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
@@ -31,7 +32,7 @@ public class GameOverScreen implements Screen {
         table.setFillParent(true);
 
         Label gameOverLabel = new Label("GAME OVER", font);
-        Label playAgainLabel = new Label("Click to Play Again", font);
+        Label playAgainLabel = new Label("Press ENTER to Play Again", font);
 
         table.add(gameOverLabel).expandX();
         table.row();
@@ -47,7 +48,7 @@ public class GameOverScreen implements Screen {
 
     @Override
     public void render(float delta) {
-        if (Gdx.input.justTouched()) {
+        if (Gdx.input.isKeyJustPressed(Input.Keys.ENTER)) {
             game.setScreen(new PlayScreen((MarioBros) game));
             dispose();
         }

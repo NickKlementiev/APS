@@ -66,7 +66,7 @@ public class PlayScreen implements Screen {
 
     public PlayScreen(MarioBros game) {
         // Alternativa: libGDX assets manager para lidar com gráficos mais elaborados
-        atlas = new TextureAtlas("Mario_and_Enemies.pack");
+        atlas = new TextureAtlas("Mario_and_Enemies.atlas");
 
         this.game = game;
 

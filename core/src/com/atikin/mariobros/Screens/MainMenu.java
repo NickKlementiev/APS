@@ -4,12 +4,15 @@ import com.atikin.mariobros.MarioBros;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
@@ -26,11 +29,14 @@ public class MainMenu implements Screen {
     private Skin skin;
     private Game game;
     private boolean play;
+    private TextButton playButton;
+    private TextButton optionsButton;
+    private TextButton exitButton;
 
     public MainMenu(Game game) {
         this.game = game;
-        atlas = new TextureAtlas("mainmenu/uiskin.atlas");
-        skin = new Skin(Gdx.files.internal("mainmenu/uiskin.json"), atlas);
+        atlas = new TextureAtlas("mainmenu/flat-earth-ui.atlas");
+        skin = new Skin(Gdx.files.internal("mainmenu/flat-earth-ui.json"), atlas);
 
         batch = new SpriteBatch();
         camera = new OrthographicCamera();
@@ -47,12 +53,15 @@ public class MainMenu implements Screen {
         Gdx.input.setInputProcessor(stage);
 
         Table mainTable = new Table();
+        Table titleTable = new Table();
         mainTable.setFillParent(true);
-        mainTable.top();
+        mainTable.center();
+        titleTable.setFillParent(true);
+        titleTable.top();
 
-        TextButton playButton = new TextButton("Play", skin);
-        TextButton optionsButton = new TextButton("Options", skin);
-        TextButton exitButton = new TextButton("Exit", skin);
+        playButton = new TextButton("Jogar", skin);
+        optionsButton = new TextButton("Ajustes", skin);
+        exitButton = new TextButton("Sair", skin);
 
         playButton.addListener(new ClickListener() {
             @Override
@@ -67,16 +76,21 @@ public class MainMenu implements Screen {
            }
         });
 
-        mainTable.add(playButton);
-        mainTable.center();
+        //Label.LabelStyle font = new Label.LabelStyle(new BitmapFont(), Color.BLACK);
+
+        //Label titleLabel = new Label("Joguinho da Abelha", font);
+
+        Label titleLabel = new Label("For a Beetter World", skin, "button", Color.ORANGE);
+
+        titleTable.add(titleLabel);
+        mainTable.add(playButton).pad(7.5f);
         mainTable.row();
         mainTable.add(optionsButton);
-        mainTable.center();
         mainTable.row();
-        mainTable.add(exitButton);
-        mainTable.center();
+        mainTable.add(exitButton).pad(7.5f);
         mainTable.row();
 
+        stage.addActor(titleTable);
         stage.addActor(mainTable);
     }
 
@@ -87,7 +101,7 @@ public class MainMenu implements Screen {
             dispose();
         }
 
-        Gdx.gl.glClearColor(.1f, .32f, .32f, 1);
+        Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         stage.act();
@@ -118,6 +132,7 @@ public class MainMenu implements Screen {
 
     @Override
     public void dispose() {
+        stage.dispose();
         skin.dispose();
         atlas.dispose();
     }
