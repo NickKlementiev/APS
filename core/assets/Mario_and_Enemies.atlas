@@ -1,5 +1,5 @@
 
-Mario_and_Enemies3.png
+Mario_and_Enemies4.png
 format: RGBA8888
 filter: Nearest,Nearest
 repeat: none
@@ -19,9 +19,9 @@ little_mario
   index: -1
 turtle
   rotate: false
-  xy: 339, 37
-  size: 96, 24
-  orig: 96, 24
+  xy: 338, 30
+  size: 98, 33
+  orig: 98, 33
   offset: 0, 0
   index: -1
 goomba

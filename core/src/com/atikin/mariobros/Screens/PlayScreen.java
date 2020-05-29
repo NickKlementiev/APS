@@ -137,7 +137,7 @@ public class PlayScreen implements Screen {
 
     // Configurar controles básicos
     public void handleInput(float dt) {
-        if (player.currentState != Mario.State.DEAD) {
+        if (player.currentState != Mario.State.DEAD && player.getX() < 32.7f) {
             if (Gdx.input.isKeyPressed(Input.Keys.LEFT) && player.b2body.getLinearVelocity().x >= -2) {
                 player.b2body.applyLinearImpulse(new Vector2(-0.1f, 0), player.b2body.getWorldCenter(), true);
             } else if (Gdx.input.isKeyPressed(Input.Keys.RIGHT) && player.b2body.getLinearVelocity().x <= 2) {
@@ -219,10 +219,24 @@ public class PlayScreen implements Screen {
             game.setScreen(new GameOverScreen(game));
             dispose();
         }
+
+        if (endGame()) {
+            MarioBros.manager.get("audio/music/mario_music.ogg", Music.class).stop();
+            game.setScreen(new Credits(game));
+            dispose();
+        }
+    }
+
+    public boolean endGame() {
+        if (player.getX() >= 32 && player.getStateTimer() > 1) {
+            return true;
+        }
+        return false;
     }
 
     public boolean gameOver() {
-        if(player.currentState == Mario.State.DEAD && player.getStateTimer() > 3) {
+        if((player.currentState == Mario.State.DEAD && player.getStateTimer() > 3) || hud.getWorldTimer() <= 0) {
+            MarioBros.manager.get("audio/music/mario_music.ogg", Music.class).stop();
             return true;
         }
         return false;

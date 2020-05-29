@@ -67,10 +67,10 @@ public class Hud implements Disposable {
         // Preencher as tabelas
         countdownLabel = new Label(String.format("%03d", worldTimer), new Label.LabelStyle(new BitmapFont(), Color.WHITE));
         scoreLabel = new Label(String.format("%06d", score), new Label.LabelStyle(new BitmapFont(), Color.WHITE));
-        timeLabel = new Label("TIME", new Label.LabelStyle(new BitmapFont(), Color.WHITE));
-        levelLabel = new Label("1-1", new Label.LabelStyle(new BitmapFont(), Color.WHITE));
-        worldLabel = new Label("WORLD", new Label.LabelStyle(new BitmapFont(), Color.WHITE));
-        marioLabel = new Label("MARIO", new Label.LabelStyle(new BitmapFont(), Color.WHITE));
+        timeLabel = new Label("TEMPO", new Label.LabelStyle(new BitmapFont(), Color.WHITE));
+        levelLabel = new Label("TERRA", new Label.LabelStyle(new BitmapFont(), Color.WHITE));
+        worldLabel = new Label("MUNDO", new Label.LabelStyle(new BitmapFont(), Color.WHITE));
+        marioLabel = new Label("ABELHA", new Label.LabelStyle(new BitmapFont(), Color.WHITE));
 
         // Adicinar as células da tabela com distância do topo (padTop)
         table.add(marioLabel).expandX().padTop(10);
@@ -83,5 +83,9 @@ public class Hud implements Disposable {
 
         // Adicionar tabela ao nível
         stage.addActor(table);
+    }
+
+    public int getWorldTimer() {
+        return worldTimer;
     }
 }

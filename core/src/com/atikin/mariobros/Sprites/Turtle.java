@@ -2,7 +2,6 @@ package com.atikin.mariobros.Sprites;
 
 import com.atikin.mariobros.MarioBros;
 import com.atikin.mariobros.Screens.PlayScreen;
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -23,30 +22,34 @@ public class Turtle extends Enemy {
     private float deadRotationDegrees;
     private boolean destroyed;
     private TextureRegion shell;
+    private BodyDef bdef;
+    private FixtureDef fdef;
 
     public Turtle(PlayScreen screen, float x, float y) {
         super(screen, x, y);
         frames = new Array<TextureRegion>();
-        frames.add(new TextureRegion(screen.getAtlas().findRegion("turtle"), 0, 0, 16, 24));
-        frames.add(new TextureRegion(screen.getAtlas().findRegion("turtle"), 16, 0, 16, 24));
-        shell = new TextureRegion(screen.getAtlas().findRegion("turtle"), 64, 0, 16, 24);
+        frames.add(new TextureRegion(screen.getAtlas().findRegion("turtle"), 0, 0, 17, 33));
+        frames.add(new TextureRegion(screen.getAtlas().findRegion("turtle"), 19, 0, 17, 33));
+        frames.add(new TextureRegion(screen.getAtlas().findRegion("turtle"), 39, 0, 17, 33));
+        frames.add(new TextureRegion(screen.getAtlas().findRegion("turtle"), 59, 0, 17, 33));
+        shell = new TextureRegion(screen.getAtlas().findRegion("turtle"), 80, 0, 18, 33);
         walkAnimation = new Animation<TextureRegion>(0.2f, frames);
         currentState = previousState = State.WALKING;
         deadRotationDegrees = 0;
 
-        setBounds(getX(), getY(), 16 / MarioBros.PPM, 24 / MarioBros.PPM);
+        setBounds(getX(), getY(), 17 / MarioBros.PPM, 33 / MarioBros.PPM);
     }
 
     @Override
     protected void defineEnemy() {
-        BodyDef bdef = new BodyDef();
+        bdef = new BodyDef();
         bdef.position.set(getX(), getY());
         bdef.type = BodyDef.BodyType.DynamicBody;
         b2body = world.createBody(bdef);
 
-        FixtureDef fdef = new FixtureDef();
+        fdef = new FixtureDef();
         CircleShape shape = new CircleShape();
-        shape.setRadius(6 / MarioBros.PPM);
+        shape.setRadius(8 / MarioBros.PPM);
         fdef.filter.categoryBits = MarioBros.ENEMY_BIT;
         fdef.filter.maskBits = MarioBros.GROUND_BIT |
                 MarioBros.COIN_BIT |
@@ -61,10 +64,10 @@ public class Turtle extends Enemy {
         // Objeto cabeça
         PolygonShape head = new PolygonShape();
         Vector2[] vertice = new Vector2[4];
-        vertice[0] = new Vector2(-5, 8).scl(1 / MarioBros.PPM);
-        vertice[1] = new Vector2(5, 8).scl(1 / MarioBros.PPM);
-        vertice[2] = new Vector2(-5, 3).scl(1 / MarioBros.PPM);
-        vertice[3] = new Vector2(5, 3).scl(1 / MarioBros.PPM);
+        vertice[0] = new Vector2(-5, 13).scl(1 / MarioBros.PPM);
+        vertice[1] = new Vector2(5, 13).scl(1 / MarioBros.PPM);
+        vertice[2] = new Vector2(-5, 8).scl(1 / MarioBros.PPM);
+        vertice[3] = new Vector2(5, 8).scl(1 / MarioBros.PPM);
         head.set(vertice);
 
         fdef.shape = head;
@@ -87,10 +90,10 @@ public class Turtle extends Enemy {
         }
 
 
-        if (velocity.x > 0 && !region.isFlipX()) {
+        if (velocity.x < 0 && !region.isFlipX()) {
             region.flip(true, false);
         }
-        if (velocity.x < 0 && region.isFlipX()) {
+        if (velocity.x > 0 && region.isFlipX()) {
             region.flip(true, false);
         }
         stateTime = currentState == previousState ? stateTime + dt : 0;
@@ -105,7 +108,7 @@ public class Turtle extends Enemy {
             currentState = State.WALKING;
             velocity.x = 1;
         }
-        setPosition(b2body.getPosition().x - getWidth() / 2, b2body.getPosition().y - 8 / MarioBros.PPM);
+        setPosition(b2body.getPosition().x - getWidth() / 2, b2body.getPosition().y - getWidth() / 2);
 
         if (currentState == State.DEAD) {
             deadRotationDegrees += 3;

@@ -11,7 +11,7 @@ import com.badlogic.gdx.physics.box2d.FixtureDef;
 public class Mushroom extends Item {
     public Mushroom(PlayScreen screen, float x, float y) {
         super(screen, x, y);
-        setRegion(screen.getAtlas().findRegion("mushroom"), 0, 0, 16, 16);
+        setRegion(screen.getAtlas().findRegion("mushroom"), 0, 0, 17, 17);
         velocity = new Vector2(0.7f, 0);
     }
 

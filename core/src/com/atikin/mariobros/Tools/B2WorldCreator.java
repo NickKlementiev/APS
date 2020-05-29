@@ -68,6 +68,22 @@ public class B2WorldCreator {
 
         }
 
+        // Configurar objetos do tipo Wall (paredes)
+        for (MapObject object: map.getLayers().get(8).getObjects().getByType(RectangleMapObject.class)) {
+            Rectangle rect = ((RectangleMapObject) object).getRectangle();
+
+            bdef.type = BodyDef.BodyType.StaticBody;
+            bdef.position.set((rect.getX() + rect.getWidth() / 2) / MarioBros.PPM, (rect.getY() + rect.getHeight() / 2) / MarioBros.PPM);
+
+            body = world.createBody(bdef);
+
+            shape.setAsBox(rect.getWidth() / 2 / MarioBros.PPM, rect.getHeight() / 2 / MarioBros.PPM);
+            fdef.shape = shape;
+            fdef.filter.categoryBits = MarioBros.OBJECT_BIT;
+            fdef.filter.maskBits = MarioBros.OBJECT_BIT | MarioBros.ENEMY_BIT | MarioBros.MARIO_BIT | MarioBros.ITEM_BIT;
+            body.createFixture(fdef);
+
+        }
         // Configurar objetos do tipo Bricks (tijolos)
         for (MapObject object: map.getLayers().get(5).getObjects().getByType(RectangleMapObject.class)) {
             Rectangle rect = ((RectangleMapObject) object).getRectangle();

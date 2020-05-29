@@ -2,7 +2,6 @@ package com.atikin.mariobros.Sprites;
 
 import com.atikin.mariobros.MarioBros;
 import com.atikin.mariobros.Screens.PlayScreen;
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.Animation;
@@ -95,10 +94,24 @@ public class Mario extends Sprite {
             defineBigMario();
         if (timeToRedefineMario)
             redefineMario();
+        if (((currentState == State.FALLING || currentState == State.JUMPING) && getY() < -1f))
+            dead();
     }
 
     public boolean isBig() {
         return marioIsBig;
+    }
+
+    public void dead() {
+        currentState = State.DEAD;
+        MarioBros.manager.get("audio/music/mario_music.ogg", Music.class).stop();
+        MarioBros.manager.get("audio/sounds/mariodie.wav", Sound.class).play();
+        marioIsDead = true;
+        Filter filter = new Filter();
+        filter.maskBits = MarioBros.NOTHING_BIT;
+        for (Fixture fixture : b2body.getFixtureList())
+            fixture.setFilterData(filter);
+        b2body.applyLinearImpulse(new Vector2(0, 4f), b2body.getWorldCenter(), true);
     }
 
     public void hit(Enemy enemy) {
@@ -185,11 +198,13 @@ public class Mario extends Sprite {
     }
 
     public void grow() {
-        runGrowAnimation = true;
-        marioIsBig = true;
-        timeToDefineBigMario = true;
-        setBounds(getX(), getY(), getWidth() * 1.5f, getHeight() * 1.5f);
-        MarioBros.manager.get("audio/sounds/powerup.wav", Sound.class).play();
+        if (!marioIsBig) {
+            runGrowAnimation = true;
+            marioIsBig = true;
+            timeToDefineBigMario = true;
+            setBounds(getX(), getY(), getWidth() * 1.5f, getHeight() * 1.5f);
+            MarioBros.manager.get("audio/sounds/powerup.wav", Sound.class).play();
+        }
     }
 
     public boolean isDead() {

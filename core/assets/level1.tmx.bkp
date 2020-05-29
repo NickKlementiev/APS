@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.2" tiledversion="1.3.5" orientation="orthogonal" renderorder="right-down" width="240" height="13" tilewidth="16" tileheight="16" infinite="0" nextlayerid="11" nextobjectid="608">
+<map version="1.2" tiledversion="1.3.5" orientation="orthogonal" renderorder="right-down" width="240" height="13" tilewidth="16" tileheight="16" infinite="0" nextlayerid="10" nextobjectid="608">
  <editorsettings>
-  <export target="level1.tmx" format="tmx"/>
+  <export target="../../desktop/build/resources/main/level1.tmx" format="tmx"/>
  </editorsettings>
  <tileset firstgid="1" name="tileset_gutter" tilewidth="16" tileheight="16" spacing="2" margin="1" tilecount="924" columns="33">
   <image source="tileset_gutter.png" width="594" height="504"/>
@@ -117,25 +117,25 @@
  <tileset firstgid="925" name="grama2" tilewidth="16" tileheight="16" tilecount="16" columns="4">
   <image source="grama2.png" width="64" height="64"/>
  </tileset>
- <tileset firstgid="941" name="Tronco2" tilewidth="19" tileheight="19" tilecount="1302" columns="42">
+ <tileset firstgid="941" name="colmeias_grandes2" tilewidth="16" tileheight="16" tilecount="400" columns="40">
+  <image source="colmeias_grandes2.png" width="640" height="160"/>
+ </tileset>
+ <tileset firstgid="1341" name="Tronco2" tilewidth="19" tileheight="19" tilecount="1302" columns="42">
   <image source="Tronco2.png" width="800" height="600"/>
  </tileset>
- <tileset firstgid="2243" name="nuvem1" tilewidth="16" tileheight="16" tilecount="36" columns="6">
+ <tileset firstgid="2643" name="nuvem1" tilewidth="16" tileheight="16" tilecount="36" columns="6">
   <image source="nuvem1.png" width="100" height="100"/>
  </tileset>
- <tileset firstgid="2279" name="nuvem2" tilewidth="16" tileheight="16" tilecount="36" columns="6">
+ <tileset firstgid="2679" name="nuvem2" tilewidth="16" tileheight="16" tilecount="36" columns="6">
   <image source="nuvem2.png" width="100" height="100"/>
  </tileset>
- <tileset firstgid="2315" name="colmeia_grande3" tilewidth="16" tileheight="16" tilecount="100" columns="10">
-  <image source="colmeia_grande3.png" width="160" height="160"/>
- </tileset>
- <tileset firstgid="2415" name="arvore1" tilewidth="16" tileheight="16" tilecount="81" columns="9">
+ <tileset firstgid="2715" name="arvore1" tilewidth="16" tileheight="16" tilecount="81" columns="9">
   <image source="arvore1.png" width="150" height="150"/>
  </tileset>
- <tileset firstgid="2496" name="arvore2" tilewidth="16" tileheight="16" tilecount="81" columns="9">
+ <tileset firstgid="2796" name="arvore2" tilewidth="16" tileheight="16" tilecount="81" columns="9">
   <image source="arvore2.png" width="150" height="150"/>
  </tileset>
- <tileset firstgid="2577" name="arvore3" tilewidth="16" tileheight="16" tilecount="81" columns="9">
+ <tileset firstgid="2877" name="arvore3" tilewidth="16" tileheight="16" tilecount="81" columns="9">
   <image source="arvore3.png" width="150" height="150"/>
  </tileset>
  <layer id="1" name="Background Color" width="240" height="13">
@@ -145,7 +145,7 @@
  </layer>
  <layer id="2" name="Graphic Layer" width="240" height="13">
   <data encoding="base64" compression="zlib">
-   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
+   eJztl7eSFDEURbWzswHTkOAXW9WFd38An4AnwfvFLCbBQ4T33gZ4mwHZAhHeR8Bf4E0yCWcLukqlldTSjLpnMFWc6lkk3Xffa71udVtBiLYcmVMSYi7Mg/mwABaW8vVQ7962EnMbbIcdsBN21bBG9ean3v3WOn6WnhaxZjG0wBJYCstK2cTKwlse7CbmHtgL+2A/HLD4yPq54+Inaw8++r71q/X9C0FZuup+mzzJc1xYzppWWAErYRWsVnKrJP8Q+8fFWx4cJOYhOAxH4Cgcs/jI+rnj4idrDz76vvUL/ezxjV8tNv/lCjz59HOo/LPcP3mfB46jfQJOwik4DWcs8bJ+7rj4qcSDT1199H3rF3rv+MavFpv/coon+V3dJv1uFvnmn+UeTjsP8M+KrCX/fzU18l1r8pOMNf9GN54VtTrnxuIXvntHFIVogAI0FvOrUxo2/+VCxzNy2pm52vdvvZH3eehfoRZ1jUXH/nVhKP06DIbDCBgJo+qoh9t77hq1uw43Sh2/gU3fxbZ59Yqcp8t81/OATdc35p9Epbnlfc6MRXr/6nIZT59OgIkwCSbDFJgK04r2tXlyk7i34LYUvyHivACNUIzCxpuE3mSYAlNhWhX6InL3quZp81GNrsuYj341tQwVxzfvrPDdO7HoiE5Dl8taenQdrIcNsBE2wWbYIvWvujbLmmsh7h24K3kvETOCztBFE1/9DitI31Fp31PT0ZsBM2EWzJb0xzYJMa7JvDYZF7/1O0Vmr+pcNU+bD5OuNj9N/Wxj7Wt1+gVD3eRaq791OcgatvokXmz3Khb632l5J71iXOtAQbOfbPfMpXdjQ810uZylR8/BebgAF+ESXIYrRXMd0mreqYHxhnD9e5+4D+Ch5L0bMbtDD+gZ+PmxAL2FsAgWQ0v06+x9AVrotyWW/k3Gk57sGpm9qnPVPHU+krU2XZf6pY356PvWMlScWNOD8t+m3OReMa0NuXds3nXoNNRcHtGfj+EJPIVn8BxewEt4Ba+L+jqk1XwEvTsyYP++IO5LeCXdh37E7A8DYGCA/pXfq63orYCVsApWS/qHmXPE0r/JeNKTfSOzV3WumqfNh03XpX5pYz76Nmw5VBMntvRgbKinrm9seqb9UUm+8nrVg4pOQ83lPb35AT7CJ/gMX+ArfIPv8KOor4Op5hE92xm6BO7fN8R9C++k+zCYmENgKAwL0L/ye3UNemthHayHDZL+XebcM9zHsmZ8UGT2qs5V87T5sOm61C9tzEffhi2HSuO49GA7am66XknT1O2PSvJN1us8qOg01Fx6oNUTekFvaIY+0Bf6QX8Y0KS/x6aaj6JnR8OYAP17tVGIa436q23sb7661MZHJ4TWn379X4dsrj8BJLWvbw==
   </data>
  </layer>
  <objectgroup id="3" name="Ground">

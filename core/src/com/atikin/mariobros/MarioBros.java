@@ -1,5 +1,6 @@
 package com.atikin.mariobros;
 
+import com.atikin.mariobros.Screens.Credits;
 import com.atikin.mariobros.Screens.MainMenu;
 import com.atikin.mariobros.Screens.PlayScreen;
 import com.badlogic.gdx.ApplicationAdapter;
@@ -50,8 +51,8 @@ public class MarioBros extends Game {
 		manager.load("audio/sounds/stomp.wav", Sound.class);
 		manager.load("audio/sounds/mariodie.wav", Sound.class);
 		manager.finishLoading();
-		//setScreen(new PlayScreen(this));
 		setScreen(new MainMenu(this));
+		//setScreen(new Credits(this));
 	}
 
 	@Override

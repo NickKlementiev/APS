@@ -7,7 +7,6 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -20,7 +19,8 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
-public class MainMenu implements Screen {
+public class Credits implements Screen {
+
     private SpriteBatch batch;
     protected Stage stage;
     private Viewport viewport;
@@ -30,10 +30,9 @@ public class MainMenu implements Screen {
     private Game game;
     private boolean play;
     private TextButton playButton;
-    private TextButton optionsButton;
     private TextButton exitButton;
 
-    public MainMenu(Game game) {
+    public Credits(Game game) {
         this.game = game;
         atlas = new TextureAtlas("mainmenu/flat-earth-ui.atlas");
         skin = new Skin(Gdx.files.internal("mainmenu/flat-earth-ui.json"), atlas);
@@ -46,22 +45,22 @@ public class MainMenu implements Screen {
         stage = new Stage(viewport, batch);
     }
 
-
     @Override
     public void show() {
-        // stage deve ter controle sobre a entrada padrão
         Gdx.input.setInputProcessor(stage);
 
-        Table mainTable = new Table();
-        Table titleTable = new Table();
-        mainTable.setFillParent(true);
-        mainTable.center();
-        titleTable.setFillParent(true);
-        titleTable.top();
+        Table credits = new Table();
+        credits.setFillParent(true);
+        credits.top();
 
-        playButton = new TextButton("Jogar", skin);
-        optionsButton = new TextButton("Ajustes", skin);
-        exitButton = new TextButton("Sair", skin);
+        Label thanksLabel = new Label("Muito obrigado por jogar!", skin, "button", Color.ORANGE);
+
+        Table buttonTable = new Table();
+        buttonTable.setFillParent(true);
+        buttonTable.bottom();
+
+        playButton = new TextButton("Jogar novamente", skin);
+        exitButton = new TextButton("Sair do jogo", skin);
 
         playButton.addListener(new ClickListener() {
             @Override
@@ -70,28 +69,20 @@ public class MainMenu implements Screen {
             }
         });
         exitButton.addListener(new ClickListener() {
-           @Override
-           public void clicked(InputEvent event, float x, float y) {
-               Gdx.app.exit();
-           }
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                Gdx.app.exit();
+            }
         });
 
-        //Label.LabelStyle font = new Label.LabelStyle(new BitmapFont(), Color.BLACK);
+        credits.add(thanksLabel);
+        buttonTable.add(playButton).pad(7.5f);
+        buttonTable.row();
+        buttonTable.add(exitButton);
+        buttonTable.row();
 
-        //Label titleLabel = new Label("Joguinho da Abelha", font);
-
-        Label titleLabel = new Label("Para um Mundo Abelhor", skin, "button", Color.ORANGE);
-
-        titleTable.add(titleLabel);
-        mainTable.add(playButton).pad(7.5f);
-        mainTable.row();
-        mainTable.add(optionsButton);
-        mainTable.row();
-        mainTable.add(exitButton).pad(7.5f);
-        mainTable.row();
-
-        stage.addActor(titleTable);
-        stage.addActor(mainTable);
+        stage.addActor(credits);
+        stage.addActor(buttonTable);
     }
 
     @Override
@@ -137,3 +128,4 @@ public class MainMenu implements Screen {
         atlas.dispose();
     }
 }
+

@@ -31,8 +31,8 @@ public class GameOverScreen implements Screen {
         table.center();
         table.setFillParent(true);
 
-        Label gameOverLabel = new Label("GAME OVER", font);
-        Label playAgainLabel = new Label("Press ENTER to Play Again", font);
+        Label gameOverLabel = new Label("FIM DE JOGO", font);
+        Label playAgainLabel = new Label("Pressione ENTER para jogar novamente", font);
 
         table.add(gameOverLabel).expandX();
         table.row();
