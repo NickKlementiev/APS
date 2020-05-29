@@ -2,6 +2,7 @@ package com.atikin.mariobros.Sprites;
 
 import com.atikin.mariobros.MarioBros;
 import com.atikin.mariobros.Screens.PlayScreen;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -126,6 +127,7 @@ public class Turtle extends Enemy {
     public void onEnemyHit(Enemy enemy) {
         if (enemy instanceof Turtle) {
             if (((Turtle) enemy).currentState == State.MOVING_SHELL && currentState != State.MOVING_SHELL) {
+                MarioBros.manager.get("audio/sounds/stomp.wav", Sound.class).play();
                 killed();
             } else if (currentState == State.MOVING_SHELL && ((Turtle) enemy).currentState == State.WALKING) {
                 return;
@@ -146,6 +148,7 @@ public class Turtle extends Enemy {
     @Override
     public void hitOnHead(Mario mario) {
         if (currentState != State.STANDING_SHELL) {
+            MarioBros.manager.get("audio/sounds/stomp.wav", Sound.class).play();
             currentState = State.STANDING_SHELL;
             velocity.x = 0;
         } else {

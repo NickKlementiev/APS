@@ -7,6 +7,7 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -53,7 +54,18 @@ public class Credits implements Screen {
         credits.setFillParent(true);
         credits.top();
 
-        Label thanksLabel = new Label("Muito obrigado por jogar!", skin, "button", Color.ORANGE);
+        Label.LabelStyle font = new Label.LabelStyle(new BitmapFont(), Color.ORANGE);
+
+        //Label phrase1Label = new Label("As abelhas não precisam de tantos obstáculos", skin, "button", Color.ORANGE);
+        //Label phrase2Label = new Label("para fazerem algo que nos ajuda no final,", skin, "button", Color.ORANGE);
+        //Label phrase3Label = new Label("valorizem nossas amigas abelhas!", skin, "button", Color.ORANGE);
+
+        Label phrase1Label = new Label("As abelhas não precisam de tantos obstáculos", font);
+        Label phrase2Label = new Label("para fazerem algo que nos ajuda no final,", font);
+        Label phrase3Label = new Label("valorizem nossas amigas abelhas!", font);
+
+        //Label thanksLabel = new Label("Muito obrigado por jogar!", skin, "button", Color.ORANGE);
+        Label thanksLabel = new Label("Muito obrigado por jogar!", font);
 
         Table buttonTable = new Table();
         buttonTable.setFillParent(true);
@@ -75,6 +87,12 @@ public class Credits implements Screen {
             }
         });
 
+        credits.add(phrase1Label);
+        credits.row();
+        credits.add(phrase2Label);
+        credits.row();
+        credits.add(phrase3Label);
+        credits.row();
         credits.add(thanksLabel);
         buttonTable.add(playButton).pad(7.5f);
         buttonTable.row();

@@ -52,7 +52,6 @@ public class MarioBros extends Game {
 		manager.load("audio/sounds/mariodie.wav", Sound.class);
 		manager.finishLoading();
 		setScreen(new MainMenu(this));
-		//setScreen(new Credits(this));
 	}
 
 	@Override
