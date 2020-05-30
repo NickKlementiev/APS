@@ -61,7 +61,7 @@ public class MainMenu implements Screen {
 
         playButton = new TextButton("Jogar", skin);
         optionsButton = new TextButton("Ajustes", skin);
-        exitButton = new TextButton("Sair", skin);
+        exitButton = new TextButton("Sair do jogo", skin);
 
         playButton.addListener(new ClickListener() {
             @Override
@@ -85,8 +85,8 @@ public class MainMenu implements Screen {
         titleTable.add(titleLabel);
         mainTable.add(playButton).pad(7.5f);
         mainTable.row();
-        mainTable.add(optionsButton);
-        mainTable.row();
+        //mainTable.add(optionsButton);
+        //mainTable.row();
         mainTable.add(exitButton).pad(7.5f);
         mainTable.row();
 

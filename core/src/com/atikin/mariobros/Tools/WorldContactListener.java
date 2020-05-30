@@ -5,7 +5,6 @@ import com.atikin.mariobros.MarioBros;
 import com.atikin.mariobros.Sprites.Enemy;
 import com.atikin.mariobros.Sprites.InteractiveTileObject;
 import com.atikin.mariobros.Sprites.Mario;
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.physics.box2d.*;
 
 // Classe responsável por "ouvir" eventos de interação entre o personagem e os objetos do jogo
