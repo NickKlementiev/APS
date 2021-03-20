@@ -1,8 +1,5 @@
 # APS
 Projeto da APS - CC2/3
 
-# Oi
-E ai?
-
-# Mito
-Teste alo
+# Para um mundo Abelhor
+Um projeto feito em libGDX de um jogo de plataforma com temática de abelha
